@@ -1,5 +1,66 @@
-const ProjectDetailsPage = () => {
-  return <>Project Details</>;
+import type { Route } from './+types/details';
+import type { Project } from '~/types';
+import { FaArrowLeft } from 'react-icons/fa';
+import { Link } from 'react-router';
+
+export async function loader({
+  request,
+  params,
+}: Route.LoaderArgs): Promise<Project> {
+  const res = await fetch(`http://localhost:8000/projects/${params.id}`);
+
+  if (!res.ok) {
+    throw new Response('Failed to fetch project details', {
+      status: res.status,
+    });
+  }
+
+  const project: Project = await res.json();
+
+  return project;
+}
+
+export function HydrateFallback() {
+  return <>Loading ...</>;
+}
+
+const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
+  const project = loaderData;
+
+  return (
+    <>
+      <Link
+        to="/projects"
+        className="flex items-center text-blue-400 hover:text-color-blue-500 mb-6 transition"
+      >
+        <FaArrowLeft className="mr-2" />
+        Back to projects
+      </Link>
+      <div className="grid gap-8 md:grid-cols-2 items-start">
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full rounded-lg shadow-md"
+        />
+        <div>
+          <h1 className="text-3xl font-bold text-blue-400 mb-4">
+            {project.title}
+          </h1>
+          <p className="text-gray-300 mb-6">{project.description}</p>
+          <p className="text-gray-300 text-sm mb-4">
+            {new Date(project.date).toLocaleDateString()} | {project.category}
+          </p>
+          <a
+            href={project.url}
+            target="_blank"
+            className="inline-block text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded transition"
+          >
+            View Project
+          </a>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ProjectDetailsPage;

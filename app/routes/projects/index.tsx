@@ -13,7 +13,6 @@ export async function loader({
 
 const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
   const { projects } = loaderData as { projects: Project[] };
-  console.log(projects);
 
   return (
     <div>

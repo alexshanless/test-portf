@@ -22,14 +22,6 @@ const ProjectCard = ({ project }: { project: Project }) => {
             <span>{new Date(project.date).toLocaleDateString()}</span>
             <span className="capitalize">{project.category}</span>
           </div>
-          <a
-            href={project.url}
-            className="text-blue-400 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit Project
-          </a>
         </div>
       </div>
     </Link>
