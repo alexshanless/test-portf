@@ -7,7 +7,9 @@ export async function loader({
   request,
   params,
 }: Route.LoaderArgs): Promise<Project> {
-  const res = await fetch(`http://localhost:8000/projects/${params.id}`);
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/projects/${params.id}`
+  );
 
   if (!res.ok) {
     throw new Response('Failed to fetch project details', {
