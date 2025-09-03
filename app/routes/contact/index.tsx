@@ -1,10 +1,52 @@
-const ContactPage = () => {
+import { Form } from 'react-router';
+import type { Route } from './+types';
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const name = formData.get('name');
+  const email = formData.get('email');
+  const subject = formData.get('subject');
+  const message = formData.get('message');
+
+  const errors: Record<string, string> = {};
+
+  if (!name) errors.name = 'Name is required';
+  if (!email) {
+    errors.email = 'Email is required';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email as string)) {
+    errors.email = 'Please enter a valid email address';
+  }
+  if (!subject) errors.subject = 'Subject is required';
+  if (!message) errors.message = 'Message is required';
+
+  if (Object.keys(errors).length > 0) {
+    return { errors };
+  }
+
+  const data = {
+    name,
+    email,
+    subject,
+    message,
+  };
+
+  return { message: 'Form submitted succesfully', data };
+}
+
+const ContactPage = ({ actionData }: Route.ComponentProps) => {
+  const errors = actionData?.errors || {};
   return (
     <div className="max-w-3xl mx-auto mt-12 px-6 py-8 bg-gray-900">
       <h2 className="text-3xl font-bold text-white mb-8 text-center">
         Contact Me
       </h2>
-      <form className="space-y-6">
+
+      {actionData?.message ? (
+        <p className="mb-6 bg-green-700 text-green-100 text-center rounded-lg border border-green-500 shadow-md">
+          {actionData.message}
+        </p>
+      ) : null}
+      <Form method="post" className="space-y-6">
         <div>
           <label
             htmlFor="name"
@@ -19,6 +61,9 @@ const ContactPage = () => {
             className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-white"
             placeholder="Your Name"
           />
+          {errors.name && (
+            <p className="text-red-400 text-sma mt-1">{errors.name}</p>
+          )}
         </div>
         <div>
           <label
@@ -34,6 +79,9 @@ const ContactPage = () => {
             className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-white"
             placeholder="Your Email"
           />
+          {errors.email && (
+            <p className="text-red-400 text-sma mt-1">{errors.email}</p>
+          )}
         </div>
         <div>
           <label
@@ -45,10 +93,13 @@ const ContactPage = () => {
           <input
             type="text"
             id="subject"
-            name="name"
+            name="subject"
             className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-white"
             placeholder="Subject"
           />
+          {errors.subject && (
+            <p className="text-red-400 text-sma mt-1">{errors.subject}</p>
+          )}
         </div>
         <div>
           <label
@@ -63,6 +114,9 @@ const ContactPage = () => {
             className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-white"
             placeholder="Your Message"
           />
+          {errors.message && (
+            <p className="text-red-400 text-sma mt-1">{errors.message}</p>
+          )}
         </div>
         <div className="text-center">
           <button
@@ -72,7 +126,7 @@ const ContactPage = () => {
             Send Message
           </button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };
