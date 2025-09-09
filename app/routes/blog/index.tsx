@@ -1,6 +1,6 @@
-import { Link } from 'react-router';
 import type { PostMeta } from '~/types';
 import type { Route } from './+types/index';
+import PostCard from '~/components/PostCard';
 
 export async function loader({
   request,
@@ -17,13 +17,14 @@ export async function loader({
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {
   const { posts } = loaderData;
-  console.log(posts);
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white mb-2">Our Blog</h1>
-      <p className="text-lg text-gray-300 text-center">
-        Welcome to the Blog page of The friendly dev!
-      </p>
+    <div className="max-w-3xl mx-auto mt-10 px-6 py-6 bg-gray-600">
+      <h2 className="text-3xl font-bold text-white mb-2">Our Blog</h2>
+
+      {posts.map((post) => (
+        <PostCard key={post.slug} post={post} />
+      ))}
     </div>
   );
 };
