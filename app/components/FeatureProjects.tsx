@@ -14,7 +14,7 @@ const FeaturedProjects = ({ projects, count = 4 }: FeaturedProjectsProps) => {
       </h2>
       <div className="grid gap-6 sm:grid-cols-2">
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.documentId} project={project} />
         ))}
       </div>
     </section>

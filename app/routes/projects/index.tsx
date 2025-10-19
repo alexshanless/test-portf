@@ -25,9 +25,7 @@ export async function loader({
     documentId: item.documentId,
     title: item.title,
     description: item.description,
-    image: item.image?.url
-      ? `${import.meta.env.VITE_STRAPI_URL}${item.image.url}`
-      : '/images/no-image.png',
+    image: item.image?.url ? `${item.image.url}` : '/images/no-image.png',
     url: item.url,
     date: item.date,
     category: item.category,
@@ -90,7 +88,7 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
       <AnimatePresence mode="wait">
         <motion.div layout className="grid gap-6 sm:grid-cols-2">
           {currentProjects.map((project) => (
-            <motion.div key={project.id} layout>
+            <motion.div key={project.documentId} layout>
               <ProjectCard project={project} />
             </motion.div>
           ))}

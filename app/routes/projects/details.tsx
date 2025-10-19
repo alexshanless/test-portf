@@ -1,12 +1,12 @@
 import type { Route } from './+types/details';
-import type { Project, StrapiProject, StrapiResponse } from '~/types';
+import type { Project, StrapiProject } from '~/types';
 import { FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router';
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const { id } = params;
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/projects?filter[documentId][$eq]={id}&populate=*`
+    `${import.meta.env.VITE_API_URL}/projects/${id}?populate=*`
   );
 
   if (!res.ok) {
@@ -15,8 +15,8 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     });
   }
 
-  const json: StrapiResponse<StrapiProject> = await res.json();
-  const item = json.data[0];
+  const json: { data: StrapiProject } = await res.json();
+  const item = json.data;
   const project: Project = {
     id: item.id,
     documentId: item.documentId,
